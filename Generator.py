@@ -33,3 +33,5 @@ def main(args=None):
     
     level.save()
     level.close()  
+
+main()
