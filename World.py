@@ -1,4 +1,3 @@
-# https://www.youtube.com/watch?v=Wx6PNRksIdw
 import amulet
 from amulet.api.block import Block
 from amulet.utils.world_utils import block_coords_to_chunk_coords
