@@ -96,3 +96,34 @@ def gen_BRCorner(level, position, corner, floor, height,length):
         place_block(level, (x+1, y + height-1, z-i+1), stair)
         place_block(level, (x-1, y + height+1, z-i+1), stair)
         place_block(level, (x-2, y + height+2, z-i+1), stair)
+<<<<<<< HEAD
+=======
+
+
+# Load the world and define materials
+#world_path = "C:\\Users\\sivap\\AppData\\Roaming\\.minecraft\\saves\\HouseGenTest"
+world_path = "flat"
+level = amulet.load_level(world_path)
+
+# Define blocks
+corner = Block("minecraft", "chiseled_stone_bricks")
+floor = Block("minecraft", "oak_planks")
+
+# Set base position and height
+# Used to determine where the corners will be placed (x, z) with y as the base height
+#origin = (250, 30)
+origin = (0,0)
+y = -60
+height = 5  # Adjustable height
+length = 5  # Length of the rectangle
+
+# Generate corners
+#gen_ULCorner(level, (origin[0], y, origin[1]), corner, floor, height, length)
+#gen_URCorner(level, (origin[0] + 9, y, origin[1]), corner, floor, height, length)
+gen_BLCorner(level, (origin[0], y, origin[1] + 9), corner, floor, height, length)
+gen_BRCorner(level, (origin[0] + 9, y, origin[1] + 9), corner, floor, height, length)
+
+# Save and close
+level.save()
+level.close()
+>>>>>>> 23ded179db30cd29a6b06ade0fc9b87eda71b8cf

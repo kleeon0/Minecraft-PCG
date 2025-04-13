@@ -23,3 +23,29 @@ def gen_Floor(level, position, floor,wall,length, width, height):
             place_block(level, (x + l, y, z + w), floor)
             place_block(level, (x + l, y + height + 1, z + w), wall)
 
+<<<<<<< HEAD
+=======
+'''    
+# Example Usage:
+world_path = "flat"
+level = amulet.load_level(world_path)
+
+# Define blocks
+wall = Block("minecraft", "stone_bricks")
+floor = Block("minecraft", "bamboo_planks")
+
+# Set base position and height
+origin = (140, 60)
+base_y = -60
+height = 3  # Adjustable height
+length = 5  # Length of the rectangle
+width = 5  # Width of the rectangle
+
+gen_Floor(level, (origin[0]+2, base_y, origin[1]+2), floor, length, width, height)
+
+
+# Save and close
+level.save()
+level.close()
+'''
+>>>>>>> 23ded179db30cd29a6b06ade0fc9b87eda71b8cf
