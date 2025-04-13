@@ -12,7 +12,6 @@ import random
 from getcoords import *
 from Heatmap import *
 
-#world_path = "flat"
 world_path = "C:\\Users\\Creon\\AppData\\Roaming\\.minecraft\\saves\\12"
 origin = (-450, 0, -70)
 
