@@ -54,6 +54,9 @@ class Tile:
         self.neighbors = dict()
         self.collapsed = False
     
+    # returns a string representation of the tile for debugging
+    # if the tile is collapsed, it returns the type of the tile
+    # if the tile is not collapsed, it returns "None" and the entropy
     def __str__(self):
         if self.isCollapsed():
             return str(self.possibilities[0])
@@ -61,28 +64,35 @@ class Tile:
             return "None" + str(self.entropy)
         
 
-        
+    # adds neighboring tile to the tile    
     def addNeighbor(self, direction, tile):
         self.neighbors[direction] = tile
-        
+    
+    # returns the entropy of the tile    
     def getEntropy(self):
         return self.entropy
-        
+    
+    # returns the number of possibilities for the tile    
     def getNeighbor(self, direction):
         return self.neighbors[direction]    
     
+    # the direction of the neighbors of that tile
     def getDirections(self):
         return self.neighbors.keys()
     
+    # returns the possibilities for the tile
     def getpossibilities(self):
         return self.possibilities
     
+    # returnsif the tile is collapsed
     def isCollapsed(self):
         return self.collapsed
     
+    # returns the type of the tile if it is collapsed
     def getType(self):
         return self.possibilities[0]
     
+    # returns a copy of the tile
     def copy(self):
         newTile = Tile()
         newTile.possibilities = self.possibilities
@@ -95,7 +105,7 @@ class Tile:
     def updateEntropy(self, neighborPossibilities, direction):
         newPossibilities = []
         changed = False
-        
+        # if the tile is not collapsed and the direction is valid
         if not self.isCollapsed():
             if direction == NORTH: 
                 opposite = SOUTH
@@ -105,18 +115,20 @@ class Tile:
                 opposite = NORTH
             if direction == WEST:  
                 opposite = EAST
+            # add the possibilities of the neighbor tile to the new possibilities
             for neighborPossibility in neighborPossibilities:                
                 newPossibilities.append(Rules[neighborPossibility][direction])
-            
+            # remove the possibilities that are not in the new possibilities
             for possibility in self.getpossibilities():
                 if Rules[possibility][opposite] not in newPossibilities:
                     self.possibilities.remove(possibility)
+                    # change the entropy if the possibilities are changed
                     changed = True
            
             self.entropy = len(self.possibilities)
         return changed
         
-    
+    # checks if the tile contradicts with its neighbors
     def contradicts(self):
         for direction in self.getDirections():
             neighborTile = self.getNeighbor(direction)
@@ -125,6 +137,7 @@ class Tile:
                 return True
         return False
     
+    # checks if the tile matches with its neighbors
     def matchingTiles(self, targetTile, direction):
         if direction == NORTH: 
             opposite = SOUTH
@@ -138,6 +151,7 @@ class Tile:
             return True
         return False
     
+    # collapses the tile by randomly choosing one of the possibilities
     def collapse(self):
         probabilities = [Weights[possibility] for possibility in self.possibilities]
         self.possibilities = random.choices(self.possibilities, weights=probabilities)
