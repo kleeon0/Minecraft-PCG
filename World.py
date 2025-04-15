@@ -32,6 +32,7 @@ class World:
         self.origin = (originX, originZ)
         self.base_y = originY
         
+        # assigning a neighbor tile for each tile
         for x in range(self.cols):
             for y in range(self.rows):
                 tile = self.grid[x][y]
@@ -46,45 +47,38 @@ class World:
         
         
         # for loop to remove certain tile types depending on the position
-        # Collapse the corners
+        # pre-collapse the corners
         for x in range(self.cols):
             for y in range(self.rows):
                 # tiles are it needs to be collapsed as well as the corners
                 if (y == 0):
                     self.grid[x][y].possibilities = [DOWN_WALL, BOTTOM_LEFT_CORNER, BOTTOM_RIGHT_CORNER, EMPTY]
                     self.grid[x][y].entropy = 4
-                    #self.constrain(self.grid[x][y])
                 if (y == self.rows - 1):
                     self.grid[x][y].possibilities = [UP_WALL, TOP_LEFT_CORNER, TOP_RIGHT_CORNER, EMPTY]
                     self.grid[x][y].entropy = 4
-                    #self.constrain(self.grid[x][y])
 
                 if (x == 0):
                     self.grid[x][y].possibilities = [LEFT_WALL, BOTTOM_LEFT_CORNER, TOP_LEFT_CORNER, EMPTY]
                     self.grid[x][y].entropy = 4
-                    #self.constrain(self.grid[x][y])
 
                 if (x == self.cols - 1):
                     self.grid[x][y].possibilities = [RIGHT_WALL, BOTTOM_RIGHT_CORNER, TOP_RIGHT_CORNER, EMPTY]
                     self.grid[x][y].entropy = 4
-                    #self.constrain(self.grid[x][y])
                     
                 if (x == 0 and y == 0):
                     self.grid[x][y].possibilities = [EMPTY, BOTTOM_LEFT_CORNER]
                     self.grid[x][y].entropy = 2
-                    #self.constrain(self.grid[x][y])
 
                     
                 if (x == self.cols - 1 and y == 0):
                     self.grid[x][y].possibilities = [EMPTY, BOTTOM_RIGHT_CORNER]
                     self.grid[x][y].entropy = 2
-                    #self.constrain(self.grid[x][y])
 
                     
                 if (x == 0 and y == self.rows - 1):
                     self.grid[x][y].possibilities = [EMPTY, TOP_LEFT_CORNER]
                     self.grid[x][y].entropy = 2
-                    #self.constrain(self.grid[x][y])
 
                     
                 if (x == self.cols-1 and y == self.rows-1):
@@ -94,7 +88,7 @@ class World:
                     
         
                
-    
+    ## get the lowest entropy value
     def getLowestEntropy(self):
         lowestEntropy = len(Rules)
         for y in range(self.rows):
@@ -105,6 +99,7 @@ class World:
                         lowestEntropy = tileEntropy
         return lowestEntropy
     
+    ## get the tiles with the lowest entropy
     def getLowestEntropyTiles(self):
         lowestEntropy = self.getLowestEntropy()
         tiles = []
@@ -119,32 +114,40 @@ class World:
     
     ## one pass of the wave function collapse algorithm
     def WaveFunctionCollapse(self):
-        lowest = self.getLowestEntropy()
+        # get the tiles with the lowest entropy
         lowestEntropyTiles = self.getLowestEntropyTiles()
         collapsed = False
         if lowestEntropyTiles == []:
             return collapsed
+        # choose a random tile to collapse
         else:
             tile = random.choice(lowestEntropyTiles)
             tile.collapse()
             self.constrain(tile)
             self.updateWeight(tile)
             collapsed = True
+        # returns true if a tile was collapsed
         return collapsed
     
+    # function to constrain the tiles based on the tile that was collapsed
     def constrain(self, tile):
+        # create a stack to hold the tiles to be updated
         tilesStack = []
+        # add the neighbor tile to the stack
         tilesStack.append(tile)
+        # loop as long as there are tiles in the stack to constrain
         while not len(tilesStack) == 0:
             tile = tilesStack.pop()
             for direction in tile.getDirections():
                 neighbor = tile.getNeighbor(direction)
+                # update the entropy of the neighbor tile based on the tile that was constrained
                 if not neighbor.isCollapsed():
                     changed = neighbor.updateEntropy(tile.getpossibilities() ,direction)
                     # if the entropy of the neighbor changed, add it to the stack to change the neighbors of the neighbor
                     if changed:
                         tilesStack.append(neighbor)
     
+    # check if all the tiles are collapsed
     def allCollapsed(self):
         allcollapsed = True
         for r in range(self.rows):
@@ -153,6 +156,7 @@ class World:
                     allcollapsed = False
         return allcollapsed
     
+    # collapse all the tiles to empty
     def collapse_to_empty(self):
         for r in range(self.rows):
             for c in range(self.cols):
@@ -176,6 +180,7 @@ class World:
             elif type == EMPTY:
                 Weights[EMPTY] *= 0.4
     
+    # check if the tiles contradict their neighbors
     def hasContradiction(self):
         for r in range(self.rows):
             for c in range(self.cols):
@@ -184,11 +189,11 @@ class World:
         return False
     
 
-    
+    # to clear the world
     def clearWorld(self):
         self = World(self.x, self.y)
     
-    
+    # to print out the grid for debugging purposes
     def print(self):
         for y in range(self.rows-1,-1,-1):
             print("[", end='')
@@ -196,12 +201,15 @@ class World:
                 print(self.grid[x][y], end=',')
             print("]")
             print()
-       
+    
+    # function to generate the world   
     def editWorld(self, level, origin, base_y, corner, wall, floor, height, length, width):
+        # x and z coordinates to place tile
         x_pointer = origin[0]
         z_pointer = origin[1]
         for z in range(self.rows-1,-1,-1):
             for x in range(self.cols):
+                # get the tile type and place the block
                 tile = self.grid[x][z]
                 tileType = tile.getType()
                 if tileType == TOP_LEFT_CORNER:
@@ -211,7 +219,7 @@ class World:
                 elif tileType == BOTTOM_LEFT_CORNER:
                     gen_BLCorner(level, (x_pointer, base_y, z_pointer+4), corner, floor, height, length)
                 elif tileType == BOTTOM_RIGHT_CORNER:
-                    gen_BRCorner(level, (x_pointer+4,base_y, z_pointer+4), corner, floor, height, length)          
+                    Gen_BRCorner(level, (x_pointer+4,base_y, z_pointer+4), corner, floor, height, length)          
                 elif tileType == UP_WALL:
                     gen_TopWall(level, (x_pointer, base_y, z_pointer), wall, floor, height, length, width)
                 elif tileType == DOWN_WALL:
@@ -221,7 +229,7 @@ class World:
                 elif tileType == RIGHT_WALL:
                     gen_RightWall(level, (x_pointer, base_y, z_pointer), wall, floor, height, length, width)
                 elif tileType == FLOOR:
-                    gen_Floor(level, (x_pointer, base_y, z_pointer), floor, wall, length, width, height)
+                    gen_Floor(level, (x_pointer, base_y, z_pointer), floor, length, width, height)
                 elif tileType == EMPTY:
                     None
                 else:
@@ -230,17 +238,12 @@ class World:
             x_pointer = origin[0]
             z_pointer += TILE_SIZE
         
-        
+    # runs wfc on the world and does it again if it has a contradiction or if it is not all collapsed
     def generateWorld(self):
-        print("Generating world")
         while self.WaveFunctionCollapse():
-            print("Collapsing tiles")
             continue
-        loops = 0
+        # if the world has a contradiction or not all collapsed, clear it and run the wfc again        
         while not self.allCollapsed() or self.hasContradiction():
-        #while self.hasContradiction():
-            print("Not all tiles collapsed")
-            print("Trying again")
             self = World(self.x,self.y, self.origin[0], self.base_y, self.origin[1]).generateWorld()
         return self
 
