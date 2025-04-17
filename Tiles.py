@@ -102,6 +102,7 @@ class Tile:
         return newTile
 
     # collapse method referenced from https://github.com/CodingQuest2023/Algorithms/
+    # entropy management referenced from https://github.com/CodingTrain/Wave-Function-Collapse
     # change entropy and return if changed
     def updateEntropy(self, neighborPossibilities, direction):
         newPossibilities = []
