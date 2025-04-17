@@ -1,3 +1,4 @@
+# collapse method referenced from https://github.com/CodingQuest2023/Algorithms/
 import random
 
 # cell types
