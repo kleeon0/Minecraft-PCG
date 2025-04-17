@@ -1,4 +1,3 @@
-# collapse method referenced from https://github.com/CodingQuest2023/Algorithms/
 import random
 
 # cell types
@@ -102,6 +101,7 @@ class Tile:
         newTile.collapsed = self.collapsed
         return newTile
 
+    # collapse method referenced from https://github.com/CodingQuest2023/Algorithms/
     # change entropy and return if changed
     def updateEntropy(self, neighborPossibilities, direction):
         newPossibilities = []
