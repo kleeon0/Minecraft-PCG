@@ -10,7 +10,7 @@ from amulet.utils.world_utils import block_coords_to_chunk_coords
 from amulet_nbt import StringTag
 import random
 from getcoords import *
-from Heatmap import *
+from Clustermap import *
 
 # minecraft world path
 world_path = "C:\\Users\\Creon\\AppData\\Roaming\\.minecraft\\saves\\Video Demo"
